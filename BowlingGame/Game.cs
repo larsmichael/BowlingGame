@@ -1,34 +1,33 @@
-﻿namespace BowlingGame
+﻿namespace BowlingGame;
+
+public class Game
 {
-    public class Game
+    private int[] rolls = new int[21];
+
+    public Game(string playerName)
     {
-        private int[] rolls = new int[21];
-
-        public Game(string playerName)
-        {
-            if (string.IsNullOrEmpty(playerName)) 
-            { 
-                throw new ArgumentNullException(nameof(playerName));
-            }
-            PlayerName = playerName;
-
-            Frames = new Frame[10];
+        if (string.IsNullOrEmpty(playerName)) 
+        { 
+            throw new ArgumentNullException(nameof(playerName));
         }
+        PlayerName = playerName;
 
-        public string PlayerName { get; }
+        Frames = new Frame[10];
+    }
 
-        public int CurrentFrame { get; } = 1;
+    public string PlayerName { get; }
 
-        public Frame[] Frames { get; }
+    public int CurrentFrame { get; } = 1;
 
-        public int Score { get; }
+    public Frame[] Frames { get; }
 
-        public void Roll(int pins)
+    public int Score { get; }
+
+    public void Roll(int pins)
+    {
+        if (pins < 0 || pins > 10)
         {
-            if (pins < 0 || pins > 10)
-            {
-                throw new ArgumentException("Illegal number of pins.", nameof(pins));
-            }
+            throw new ArgumentException("Illegal number of pins.", nameof(pins));
         }
     }
 }

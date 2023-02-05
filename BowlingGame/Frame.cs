@@ -1,9 +1,8 @@
-﻿namespace BowlingGame
-{
-    public class Frame
-    {
-        public int Number { get; }
+﻿namespace BowlingGame;
 
-        public Frame(int number) => Number = number;
-    }
+public class Frame
+{
+    public int Number { get; }
+
+    public Frame(int number) => Number = number;
 }
