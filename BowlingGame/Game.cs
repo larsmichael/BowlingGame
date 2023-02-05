@@ -17,7 +17,7 @@
         {
             if (pins < 0 || pins > 10)
             {
-                throw new ArgumentException("illegal number of pins.", nameof(pins));
+                throw new ArgumentException("Illegal number of pins.", nameof(pins));
             }
         }
     }
