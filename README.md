@@ -1,4 +1,7 @@
 # Bowling Game 
+
+[![Coverage Status](https://coveralls.io/repos/github/larsmichael/BowlingGame/badge.svg?branch=master)](https://coveralls.io/github/larsmichael/BowlingGame?branch=master)
+
 This is a C# implementation of a domain model for a bowling game scoreboard.
 
 ## The `Game` class
