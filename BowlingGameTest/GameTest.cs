@@ -6,7 +6,7 @@ public class GameTest
 
     public GameTest()
     {
-        game = new Game("John Doe");
+        game = new Game("The Dude");
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class GameTest
     [Fact]
     public void PlayerNameIsOk()
     {
-        Assert.Equal("John Doe", game.PlayerName);
+        Assert.Equal("The Dude", game.PlayerName);
     }
 
     [Fact]

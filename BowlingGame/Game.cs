@@ -158,8 +158,5 @@ public class Game
         return result;
     }
 
-    private int? CalculateSpare(int frameIndex)
-    {
-        return 10 + _frames[frameIndex + 1].First;
-    }
+    private int? CalculateSpare(int frameIndex) => 10 + _frames[frameIndex + 1].First;
 }
