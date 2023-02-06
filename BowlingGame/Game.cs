@@ -2,9 +2,8 @@
 
 public class Game
 {
-#warning remove?
-    private int[] rolls = new int[21];
-    private int currentRoll = 0;
+    private int _frameIndex = 0;
+    private readonly Frame[] _frames = new Frame[10];
 
     public Game(string playerName)
     {
@@ -14,25 +13,31 @@ public class Game
         }
         PlayerName = playerName;
 
-        Frames = new Frame[10];
         for (int i = 0; i < 10; i++)
         {
-            Frames[i] = new Frame(i);
+            _frames[i] = new Frame(i);
         }
     }
 
     public string PlayerName { get; }
 
-    public int CurrentFrameIndex { get; set; } = 0;
+    public int CurrentFrameNo => _frameIndex + 1;
 
-    public Frame[] Frames { get; }
+    public Frame GetFrame(int frameNo)
+    {
+        if (frameNo < 0 || frameNo > 10)
+        {
+            throw new ArgumentException($"Non existing frame number {frameNo}.", nameof(frameNo));
+        }
+        return _frames[frameNo - 1];
+    }
 
     public int GetScore()
     {
         var score = 0;
-        for (int i = 0; i < CurrentFrameIndex; i++)
+        for (int i = 0; i < _frameIndex; i++)
         {
-            score += Frames[i].Score is null ? 0 : (int)Frames[i].Score!;
+            score += _frames[i].Score is null ? 0 : (int)_frames[i].Score!;
         }
         return score;  
     }
@@ -44,43 +49,41 @@ public class Game
             throw new ArgumentException("Illegal number of pins.", nameof(pins));
         }
 
-        rolls[currentRoll++] = pins;
-
-        var frame = Frames[CurrentFrameIndex];
+        var frame = _frames[_frameIndex];
 
         // Last frame
-        if (CurrentFrameIndex == 9)
+        if (CurrentFrameNo == 10)
         {
             // TODO
         }
 
-        if (frame.Roll1 is null)
+        if (frame.First is null)
         {
-            frame.Roll1 = pins;
+            frame.First = pins;
         }
         else
         {
-            frame.Roll2 = pins;
+            frame.Second = pins;
         }
 
         CalculateMissingFrameScores();
 
-        if (frame.IsStrike() || frame.Roll2 is not null)
+        if (frame.IsStrike() || frame.Second is not null)
         {
             if (!frame.IsSpare())
             {
-                frame.Score = frame.Roll1 + frame.Roll2;
+                frame.Score = frame.First + frame.Second;
             }
 
-            CurrentFrameIndex += 1;
+            _frameIndex += 1;
         }
     }
 
     private void CalculateMissingFrameScores()
     {
-        for (int i = 0; i < CurrentFrameIndex; i++)
+        for (int i = 0; i < _frameIndex; i++)
         {
-            var frame = Frames[i];
+            var frame = _frames[i];
             if (frame.Score is null)
             {
                 if (frame.IsSpare())
@@ -97,14 +100,14 @@ public class Game
 
     private int? TryCalculateStrike(int frameIndex)
     {
-        var result = 10 + Frames[frameIndex + 1].Roll1;
-        if (Frames[frameIndex + 1].Roll2 is not null)
+        var result = 10 + _frames[frameIndex + 1].First;
+        if (_frames[frameIndex + 1].Second is not null)
         {
-            result += Frames[frameIndex + 1].Roll2;
+            result += _frames[frameIndex + 1].Second;
         }
-        else if (Frames[frameIndex + 2].Roll1 is not null)
+        else if (_frames[frameIndex + 2].First is not null)
         {
-            result += Frames[frameIndex + 2].Roll1;
+            result += _frames[frameIndex + 2].First;
         }
         else
         {
@@ -115,6 +118,6 @@ public class Game
 
     private int? CalculateSpare(int frameIndex)
     {
-        return 10 + Frames[frameIndex +1].Roll1;
+        return 10 + _frames[frameIndex +1].First;
     }
 }

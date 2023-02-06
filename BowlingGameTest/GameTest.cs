@@ -1,9 +1,14 @@
-using System.Runtime.CompilerServices;
-
 namespace BowlingGame.Test;
 
 public class GameTest
 {
+    private readonly Game game;
+
+    public GameTest()
+    {
+        game = new Game("John Doe");
+    }
+
     [Fact]
     public void CreateWithNullOrEmptyPlayerNameShouldThrow()
     {
@@ -16,57 +21,110 @@ public class GameTest
     [InlineData(11)]
     public void RollWithIllegalNumberOfPinsShouldThrow(int pins)
     {
-        var game = new Game("John Doe");
         var e = Assert.Throws<ArgumentException>(() => game.Roll(pins));
         Assert.Contains("Illegal number of pins.", e.Message);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(11)]
+    public void GetFrameWithIllegalNumberShouldThrow(int frameNo)
+    {
+        var e = Assert.Throws<ArgumentException>(() => game.GetFrame(frameNo));
+        Assert.Contains($"Non existing frame number {frameNo}.", e.Message);
+    }
+
+    [Fact]
+    public void PlayerNameIsOk()
+    {
+        Assert.Equal("John Doe", game.PlayerName);
     }
 
     [Fact]
     public void GetScoreShouldReturnZeroBeforeFirstRoll()
     {
-        var game = new Game("John Doe");
         Assert.Equal(0, game.GetScore());
     }
 
     [Fact]
-    public void Preliminary()
+    public void TestSingleSpare()
     {
-        var game = new Game("John Doe");
         game.Roll(3);
         game.Roll(6);
         game.Roll(7);
-        game.Roll(3);  // spare
+        game.Roll(3);  // Spare
         game.Roll(6);
         game.Roll(1);
+
+        Assert.Equal(4, game.CurrentFrameNo);
+        Assert.True(game.GetFrame(2).IsSpare());
+        Assert.Equal(16, game.GetFrame(2).Score);
         Assert.Equal(32, game.GetScore());
     }
 
     [Fact]
-    public void Preliminary2()
+    public void TestSingleSpareAndTwoPendingStrikeCalculations()
     {
-        var game = new Game("John Doe");
         game.Roll(3);
         game.Roll(6);
         game.Roll(7);
-        game.Roll(3);  // spare
-        game.Roll(10); // strike
-        game.Roll(10); // strike
+        game.Roll(3);  // Spare
+        game.Roll(10); // Strike
+        game.Roll(10); // Strike
+
+        Assert.Equal(5, game.CurrentFrameNo);
+        Assert.True(game.GetFrame(2).IsSpare());
+        Assert.Equal(20, game.GetFrame(2).Score);
+        Assert.True(game.GetFrame(3).IsStrike());
+        Assert.Null(game.GetFrame(3).Score);
+        Assert.True(game.GetFrame(4).IsStrike());
+        Assert.Null(game.GetFrame(4).Score);
         Assert.Equal(29, game.GetScore());
     }
 
     [Fact]
-    public void Preliminary3()
+    public void TestSingleSpareSingleStrikeAndPendingSpareCaculations()
     {
-        var game = new Game("John Doe");
         game.Roll(3);
         game.Roll(6);
         game.Roll(7);
-        game.Roll(3);  // spare
-        game.Roll(10); // strike
+        game.Roll(3);  // Spare
+        game.Roll(10); // Strike
         game.Roll(5);
-        game.Roll(5);  // spare
+        game.Roll(5);  // Spare
+
+        Assert.Equal(5, game.CurrentFrameNo);
+        Assert.True(game.GetFrame(2).IsSpare());
+        Assert.Equal(20, game.GetFrame(2).Score);
+        Assert.True(game.GetFrame(3).IsStrike());
+        Assert.Equal(20, game.GetFrame(3).Score);
+        Assert.True(game.GetFrame(4).IsSpare());
+        Assert.Null(game.GetFrame(4).Score);
         Assert.Equal(49, game.GetScore());
     }
+
+    [Fact]
+    public void TestGutterGame()
+    {
+        RollMany(20, 0);
+        Assert.Equal(0, game.GetScore());
+    }
+
+    [Fact]
+    public void TestAllOnes()
+    {
+        RollMany(20, 1);
+        Assert.Equal(20, game.GetScore());
+    }
+
+    private void RollMany(int n, int pins)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            game.Roll(pins);
+        }
+    }
+
 
 
 
