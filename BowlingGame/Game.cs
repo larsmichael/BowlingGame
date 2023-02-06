@@ -37,7 +37,7 @@ public class Game
     public int GetScore()
     {
         var score = 0;
-        for (int i = 0; i < _frameIndex; i++)
+        for (int i = 0; i <= _frameIndex; i++)
         {
             score += _frames[i].Score is null ? 0 : (int)_frames[i].Score!;
         }
@@ -61,7 +61,40 @@ public class Game
         // Last frame
         if (CurrentFrameNo == 10)
         {
-            // TODO
+            if (frame.First is null)
+            {
+                frame.First = pins;
+            }
+            else if (frame.Second is null)
+            {
+                frame.Second = pins;
+            }
+            else
+            {
+                frame.Last = pins;
+            }
+
+            CalculateMissingFrameScores();
+
+            if (frame.IsStrike() && frame.Second is not null && frame.Last is not null)
+            {
+                frame.Score = frame.First + frame.Second + frame.Last;
+                Status = GameStatus.Finished;
+            }
+
+            if (frame.IsSpare() && frame.Last is not null)
+            {
+                frame.Score = 10 + frame.Last;
+                Status = GameStatus.Finished;
+            }
+
+            if (frame.First is not null && frame.Second is not null && !frame.IsStrike() && !frame.IsSpare())
+            {
+                frame.Score = frame.First + frame.Second;
+                Status = GameStatus.Finished;
+            }
+
+            return;
         }
 
         if (frame.First is null)
@@ -77,12 +110,11 @@ public class Game
 
         if (frame.IsStrike() || frame.Second is not null)
         {
+            _frameIndex += 1;
             if (!frame.IsSpare())
             {
                 frame.Score = frame.First + frame.Second;
             }
-
-            _frameIndex += 1;
         }
     }
 
@@ -112,7 +144,7 @@ public class Game
         {
             result += _frames[frameIndex + 1].Second;
         }
-        else if (_frames[frameIndex + 2].First is not null)
+        else if (frameIndex != 8 && _frames[frameIndex + 2].First is not null)
         {
             result += _frames[frameIndex + 2].First;
         }
