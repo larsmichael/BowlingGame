@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - 'BowlingGame/**'
+      - 'BowlingGameTest/**'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'BowlingGame/**'
+      - 'BowlingGameTest/**' 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ./BowlingGame.sln -s https://api.nuget.org/v3/index.json 
+    - name: Build
+      run: dotnet build ./BowlingGame.sln --no-restore
+    - name: Test
+      run: dotnet test ./BowlingGameTest/BowlingGame.Test.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
+    - name: Publish coverage report to coveralls.io
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ./DomainServicesTest/TestResults/coverage.info
