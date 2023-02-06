@@ -6,13 +6,13 @@ public class Frame
 
     public Frame(int index) => _index = index;
 
-    public int? First { get; set; }
+    public int? First { get; internal set; }
 
-    public int? Second { get; set; }
+    public int? Second { get; internal set; }
 
-    public int? Last { get; set; }
+    public int? Last { get; internal set; }
 
-    public int? Score { get; set; }
+    public int? Score { get; internal set; }
 
     public bool IsStrike()
     {
