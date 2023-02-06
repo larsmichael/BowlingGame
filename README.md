@@ -36,6 +36,6 @@ bool IsStrike();
 bool IsSpare();
 ```
 
-tells whether the frame is registered as a strike or a spare.
+tell whether the frame is registered as a strike or a spare.
 
 The solution is inspired by (but more advanced than) the [Bowling Game Kata](http://butunclebob.com/ArticleS.UncleBob.TheBowlingGameKata) by Uncle Bob Martin.
