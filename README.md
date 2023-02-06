@@ -1,4 +1,8 @@
 # Bowling Game 
+
+[![ci](https://github.com/larsmichael/BowlingGame/actions/workflows/ci.yml/badge.svg)](https://github.com/larsmichael/BowlingGame/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/larsmichael/BowlingGame/badge.svg?branch=master)](https://coveralls.io/github/larsmichael/BowlingGame?branch=master)
+
 This is a C# implementation of a domain model for a bowling game scoreboard.
 
 ## The `Game` class
@@ -32,6 +36,6 @@ bool IsStrike();
 bool IsSpare();
 ```
 
-tells whether the frame is registered as a strike or a spare.
+tell whether the frame is registered as a strike or a spare.
 
 The solution is inspired by (but more advanced than) the [Bowling Game Kata](http://butunclebob.com/ArticleS.UncleBob.TheBowlingGameKata) by Uncle Bob Martin.
