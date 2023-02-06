@@ -19,6 +19,8 @@ public class Game
         }
     }
 
+    public GameStatus Status { get; private set; } = GameStatus.Ongoing;
+
     public string PlayerName { get; }
 
     public int CurrentFrameNo => _frameIndex + 1;
@@ -44,6 +46,11 @@ public class Game
 
     public void Roll(int pins)
     {
+        if (Status == GameStatus.Finished)
+        {
+            throw new InvalidOperationException("Game is over. You cannot roll any more.");
+        }
+
         if (pins < 0 || pins > 10)
         {
             throw new ArgumentException("Illegal number of pins.", nameof(pins));
