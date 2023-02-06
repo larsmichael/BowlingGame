@@ -7,8 +7,8 @@ public class Game
 
     public Game(string playerName)
     {
-        if (string.IsNullOrEmpty(playerName)) 
-        { 
+        if (string.IsNullOrEmpty(playerName))
+        {
             throw new ArgumentNullException(nameof(playerName));
         }
         PlayerName = playerName;
@@ -41,7 +41,7 @@ public class Game
         {
             score += _frames[i].Score is null ? 0 : (int)_frames[i].Score!;
         }
-        return score;  
+        return score;
     }
 
     public void Roll(int pins)
@@ -76,19 +76,19 @@ public class Game
 
             CalculateMissingFrameScores();
 
-            if (frame.IsStrike() && frame.Second is not null && frame.Last is not null)
+            if (frame.IsStrike() && frame.Second is { } && frame.Last is { })
             {
                 frame.Score = frame.First + frame.Second + frame.Last;
                 Status = GameStatus.Finished;
             }
 
-            if (frame.IsSpare() && frame.Last is not null)
+            if (frame.IsSpare() && frame.Last is { })
             {
                 frame.Score = 10 + frame.Last;
                 Status = GameStatus.Finished;
             }
 
-            if (frame.First is not null && frame.Second is not null && !frame.IsStrike() && !frame.IsSpare())
+            if (frame.First is { } && frame.Second is { } && !frame.IsStrike() && !frame.IsSpare())
             {
                 frame.Score = frame.First + frame.Second;
                 Status = GameStatus.Finished;
@@ -108,7 +108,7 @@ public class Game
 
         CalculateMissingFrameScores();
 
-        if (frame.IsStrike() || frame.Second is not null)
+        if (frame.IsStrike() || frame.Second is { })
         {
             _frameIndex += 1;
             if (!frame.IsSpare())
@@ -140,11 +140,11 @@ public class Game
     private int? TryCalculateStrike(int frameIndex)
     {
         var result = 10 + _frames[frameIndex + 1].First;
-        if (_frames[frameIndex + 1].Second is not null)
+        if (_frames[frameIndex + 1].Second is { })
         {
             result += _frames[frameIndex + 1].Second;
         }
-        else if (frameIndex != 8 && _frames[frameIndex + 2].First is not null)
+        else if (frameIndex != 8 && _frames[frameIndex + 2].First is { })
         {
             result += _frames[frameIndex + 2].First;
         }
@@ -157,6 +157,6 @@ public class Game
 
     private int? CalculateSpare(int frameIndex)
     {
-        return 10 + _frames[frameIndex +1].First;
+        return 10 + _frames[frameIndex + 1].First;
     }
 }

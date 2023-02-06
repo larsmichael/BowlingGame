@@ -18,7 +18,7 @@ public class Frame
     {
         return First == 10;
     }
-    
+
     public bool IsSpare()
     {
         return First + Second == 10;
