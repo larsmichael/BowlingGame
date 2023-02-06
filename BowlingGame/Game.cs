@@ -57,43 +57,9 @@ public class Game
         }
 
         var frame = _frames[_frameIndex];
-
-        // Last frame
         if (CurrentFrameNo == 10)
         {
-            if (frame.First is null)
-            {
-                frame.First = pins;
-            }
-            else if (frame.Second is null)
-            {
-                frame.Second = pins;
-            }
-            else
-            {
-                frame.Last = pins;
-            }
-
-            CalculateMissingFrameScores();
-
-            if (frame.IsStrike() && frame.Second is { } && frame.Last is { })
-            {
-                frame.Score = frame.First + frame.Second + frame.Last;
-                Status = GameStatus.Finished;
-            }
-
-            if (frame.IsSpare() && frame.Last is { })
-            {
-                frame.Score = 10 + frame.Last;
-                Status = GameStatus.Finished;
-            }
-
-            if (frame.First is { } && frame.Second is { } && !frame.IsStrike() && !frame.IsSpare())
-            {
-                frame.Score = frame.First + frame.Second;
-                Status = GameStatus.Finished;
-            }
-
+            HandleLastFrame(frame, pins);
             return;
         }
 
@@ -115,6 +81,42 @@ public class Game
             {
                 frame.Score = frame.First + frame.Second;
             }
+        }
+    }
+
+    private void HandleLastFrame(Frame frame, int pins)
+    {
+        if (frame.First is null)
+        {
+            frame.First = pins;
+        }
+        else if (frame.Second is null)
+        {
+            frame.Second = pins;
+        }
+        else
+        {
+            frame.Last = pins;
+        }
+
+        CalculateMissingFrameScores();
+
+        if (frame.IsStrike() && frame.Second is { } && frame.Last is { })
+        {
+            frame.Score = frame.First + frame.Second + frame.Last;
+            Status = GameStatus.Finished;
+        }
+
+        if (frame.IsSpare() && frame.Last is { })
+        {
+            frame.Score = 10 + frame.Last;
+            Status = GameStatus.Finished;
+        }
+
+        if (frame.First is { } && frame.Second is { } && !frame.IsStrike() && !frame.IsSpare())
+        {
+            frame.Score = frame.First + frame.Second;
+            Status = GameStatus.Finished;
         }
     }
 
