@@ -1,4 +1,7 @@
-﻿namespace BowlingGame;
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("BowlingGame.Test")]
+namespace BowlingGame;
 
 public class Frame
 {
