@@ -125,16 +125,17 @@ public class Game
         for (int i = 0; i < _frameIndex; i++)
         {
             var frame = _frames[i];
-            if (frame.Score is null)
+            if (frame.Score is { })
             {
-                if (frame.IsSpare())
-                {
-                    frame.Score = CalculateSpare(i);
-                }
-                else if (frame.IsStrike())
-                {
-                    frame.Score = TryCalculateStrike(i);
-                }
+                continue;
+            }
+            if (frame.IsSpare())
+            {
+                frame.Score = CalculateSpare(i);
+            }
+            else if (frame.IsStrike())
+            {
+                frame.Score = TryCalculateStrike(i);
             }
         }
     }
