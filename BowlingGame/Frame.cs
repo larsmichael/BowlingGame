@@ -17,18 +17,9 @@ public class Frame
 
     public int? Score { get; internal set; }
 
-    public bool IsStrike()
-    {
-        return First == 10;
-    }
+    public bool IsStrike() => First == 10;
 
-    public bool IsSpare()
-    {
-        return First + Second == 10;
-    }
+    public bool IsSpare() => First + Second == 10;
 
-    public override string ToString()
-    {
-        return $"Frame {_index + 1}";
-    }
+    public override string ToString() => $"Frame {_index + 1}";
 }
