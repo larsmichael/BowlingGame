@@ -122,20 +122,15 @@ public class Game
 
     private void CalculateMissingFrameScores()
     {
-        for (int i = 0; i < _frameIndex; i++)
+        foreach (var frame in _frames.Where(f => f.Index < _frameIndex && f.Score is null))
         {
-            var frame = _frames[i];
-            if (frame.Score is { })
-            {
-                continue;
-            }
             if (frame.IsSpare())
             {
-                frame.Score = CalculateSpare(i);
+                frame.Score = CalculateSpare(frame.Index);
             }
             else if (frame.IsStrike())
             {
-                frame.Score = TryCalculateStrike(i);
+                frame.Score = TryCalculateStrike(frame.Index);
             }
         }
     }

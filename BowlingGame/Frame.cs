@@ -5,9 +5,7 @@ namespace BowlingGame;
 
 public class Frame
 {
-    private readonly int _index;
-
-    public Frame(int index) => _index = index;
+    public Frame(int index) => Index = index;
 
     public int? First { get; internal set; }
 
@@ -17,9 +15,11 @@ public class Frame
 
     public int? Score { get; internal set; }
 
+    public int Index { get; }
+
     public bool IsStrike() => First == 10;
 
     public bool IsSpare() => First + Second == 10;
 
-    public override string ToString() => $"Frame {_index + 1}";
+    public override string ToString() => $"Frame {Index + 1}";
 }
