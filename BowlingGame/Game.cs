@@ -13,10 +13,16 @@ public class Game
         }
         PlayerName = playerName;
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 9; i++)
         {
-            _frames[i] = new Frame(i);
+            var frame = new Frame(i);
+            frame.Completed += (object? _, EventArgs _) => _frameIndex += 1;
+            _frames[i] = frame;
         }
+
+        var lastFrame = new LastFrame();
+        lastFrame.Completed += (object? _, EventArgs _) => Status = GameStatus.Finished;
+        _frames[9] = lastFrame;
     }
 
     public GameStatus Status { get; private set; } = GameStatus.Ongoing;
@@ -57,76 +63,18 @@ public class Game
         }
 
         var frame = _frames[_frameIndex];
-        if (CurrentFrameNo == 10)
-        {
-            HandleLastFrame(frame, pins);
-            return;
-        }
-
-        if (frame.First is null)
-        {
-            frame.First = pins;
-        }
-        else
-        {
-            frame.Second = pins;
-        }
-
+        frame.Roll(pins);
+        
         CalculateMissingFrameScores();
-
-        if (frame.IsStrike() || frame.Second is { })
-        {
-            _frameIndex += 1;
-            if (!frame.IsSpare())
-            {
-                frame.Score = frame.First + frame.Second;
-            }
-        }
-    }
-
-    private void HandleLastFrame(Frame frame, int pins)
-    {
-        if (frame.First is null)
-        {
-            frame.First = pins;
-        }
-        else if (frame.Second is null)
-        {
-            frame.Second = pins;
-        }
-        else
-        {
-            frame.Last = pins;
-        }
-
-        CalculateMissingFrameScores();
-
-        if (frame.IsStrike() && frame.Second is { } && frame.Last is { })
-        {
-            frame.Score = frame.First + frame.Second + frame.Last;
-            Status = GameStatus.Finished;
-        }
-
-        if (frame.IsSpare() && frame.Last is { })
-        {
-            frame.Score = 10 + frame.Last;
-            Status = GameStatus.Finished;
-        }
-
-        if (frame.First is { } && frame.Second is { } && !frame.IsStrike() && !frame.IsSpare())
-        {
-            frame.Score = frame.First + frame.Second;
-            Status = GameStatus.Finished;
-        }
     }
 
     private void CalculateMissingFrameScores()
     {
-        foreach (var frame in _frames.Where(f => f.Index < _frameIndex && f.Score is null))
+        foreach (var frame in _frames.Where(f => f.IsCompleted && f.Score is null))
         {
             if (frame.IsSpare())
             {
-                frame.Score = CalculateSpare(frame.Index);
+                frame.Score = TryCalculateSpare(frame.Index);
             }
             else if (frame.IsStrike())
             {
@@ -153,5 +101,15 @@ public class Game
         return result;
     }
 
-    private int CalculateSpare(int frameIndex) => (int)(10 + _frames[frameIndex + 1].First)!;
+    private int? TryCalculateSpare(int frameIndex)
+    {
+        if (_frames[frameIndex + 1].First is { })
+        {
+            return 10 + _frames[frameIndex + 1].First;
+        }
+        else
+        {
+            return null;
+        }
+    }
 }
