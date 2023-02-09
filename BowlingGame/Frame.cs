@@ -1,15 +1,12 @@
-﻿using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("BowlingGame.Test")]
-namespace BowlingGame;
+﻿namespace BowlingGame;
 
 public class Frame
 {
     public Frame(int index) => Index = index;
 
-    public event EventHandler? FrameCompleted;
+    public event EventHandler? Completed;
 
-    public bool Completed { get; private set; } = false;
+    public bool IsCompleted { get; private set; } = false;
 
     public virtual void Roll(int pins)
     {
@@ -18,7 +15,7 @@ public class Frame
             First = pins;
             if (IsStrike())
             {
-                OnFrameCompleted();
+                OnCompleted();
             }
         }
         else
@@ -28,15 +25,13 @@ public class Frame
             {
                 Score = First + Second;
             }
-            OnFrameCompleted();
+            OnCompleted();
         }
     }
 
-    public int? First { get; internal set; }
+    public int? First { get; protected set; }
 
-    public int? Second { get; internal set; }
-
-    public int? Last { get; internal set; }
+    public int? Second { get; protected set; }
 
     public int? Score { get; internal set; }
 
@@ -48,9 +43,9 @@ public class Frame
 
     public override string ToString() => $"Frame {Index + 1}";
 
-    protected virtual void OnFrameCompleted()
+    protected virtual void OnCompleted()
     {
-        Completed = true;
-        FrameCompleted?.Invoke(this, new EventArgs());
+        IsCompleted = true;
+        Completed?.Invoke(this, new EventArgs());
     }
 }

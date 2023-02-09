@@ -12,10 +12,8 @@ public class FrameTest
     [Fact]
     public void IsStrikeIsOk()
     {
-        var frame = new Frame(9)
-        {
-            First = 10
-        };
+        var frame = new Frame(9);
+        frame.Roll(10);
         Assert.True(frame.IsStrike());
         Assert.False(frame.IsSpare());
     }
@@ -23,11 +21,9 @@ public class FrameTest
     [Fact]
     public void IsSpareIsOk()
     {
-        var frame = new Frame(9)
-        {
-            First = 9,
-            Second = 1
-        };
+        var frame = new Frame(9);
+        frame.Roll(9);
+        frame.Roll(1);
         Assert.False(frame.IsStrike());
         Assert.True(frame.IsSpare());
     }
